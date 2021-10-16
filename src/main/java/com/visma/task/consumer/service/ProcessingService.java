@@ -2,6 +2,7 @@ package com.visma.task.consumer.service;
 
 import com.visma.task.consumer.model.Status;
 import com.visma.task.consumer.model.StatusType;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @Service
 public class ProcessingService {
-    private static final Logger logger = LoggerFactory.getLogger(ProcessingService.class);
 
     private static final String URL_INIT = "http://localhost:8037/thirdpartyservice/init";
     private static final String URL_GET = "http://localhost:8037/thirdpartyservice/checkStatus/{uuid}";
@@ -26,7 +27,7 @@ public class ProcessingService {
     public void init() {
         String uuid = callInit();
         Status status = getStatus(uuid);
-        logger.info("Status received: {}", status);
+        log.info("Status received: {}", status);
     }
 
     public String callInit() {
