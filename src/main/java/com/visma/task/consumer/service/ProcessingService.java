@@ -23,12 +23,12 @@ public class ProcessingService {
         this.restfulService = restfulService;
     }
 
-    @PostConstruct
-    public void init() {
-        String uuid = callInit();
-        Status status = getStatus(uuid);
-        log.info("Status received: {}", status);
-    }
+//    @PostConstruct
+//    public void init() {
+//        String uuid = callInit();
+//        Status status = getStatus(uuid);
+//        log.info("Status received: {}", status);
+//    }
 
     public String callInit() {
         String content = "content";
