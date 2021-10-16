@@ -1,12 +1,13 @@
 package com.visma.task.consumer.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
-@Data
+@Getter
 @ToString
+@AllArgsConstructor
 public class Status {
-
     private String uuid;
     private StatusType statusType;
 }

@@ -1,9 +1,8 @@
 package com.visma.task.consumer.model;
 
 public enum StatusType {
-
-    OK,
+    SENT,
     IN_PROGRESS,
+    OK,
     FAILED
-
 }
