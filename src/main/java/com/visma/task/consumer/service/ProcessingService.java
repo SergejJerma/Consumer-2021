@@ -1,9 +1,6 @@
 package com.visma.task.consumer.service;
 
-import com.visma.task.consumer.model.ClientRequest;
-import com.visma.task.consumer.model.Item;
-import com.visma.task.consumer.model.Status;
-import com.visma.task.consumer.model.StatusType;
+import com.visma.task.consumer.model.*;
 import com.visma.task.consumer.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -49,19 +46,32 @@ public class ProcessingService {
         itemRepository.save(item);
     }
 
+    public void updateItemStatus(List<Item> itemsInProgress) {
+        var updatedItems =itemsInProgress
+                .stream()
+                .map(i -> {
+                    Status status = getStatus(i.getUuidTps());
+                    Item item = itemRepository.findItemByUuidTps(status.getUuid());
+                    item.setStatusType(status.getStatusType().name());
+                    item.setDateModified(LocalDateTime.now());
+                    return itemRepository.save(item);
+                }).collect(Collectors.toList());
+        log.info("Updated items={}", updatedItems);
+    }
+
     public Status getStatus(String uuid) {
         ResponseEntity<Status> response = restfulService.get(URL_GET, Status.class, uuid);
         if (Objects.nonNull(response)) {
             return response.getBody();
         } else {
-            return new Status(uuid, StatusType.SENT);
+            return new Status(uuid, StatusType.NOT_SENT);
         }
     }
 
-    public List<String> getSubmittedContent() {
+    public List<ContentResponse> getSubmittedContent() {
         return itemRepository.findAllItemsByStatusType(StatusType.OK.name())
                 .stream()
-                .map(Item::getContent)
+                .map(item -> new ContentResponse(item.getContent()))
                 .collect(Collectors.toList());
     }
 }
