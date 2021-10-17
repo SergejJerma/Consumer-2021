@@ -1,7 +1,7 @@
 package com.visma.task.consumer.model;
 
 public enum StatusType {
-    NOT_SENT,
+    NOT_FOUND,
     IN_PROGRESS,
     OK,
     FAILED

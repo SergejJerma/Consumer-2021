@@ -29,11 +29,16 @@ public class ProcessingService {
 
     @Async
     public void importContent(ClientRequest request) {
-        ResponseEntity<String> response = restfulService.postJson(URL_INIT, request.getContent(), String.class);
-
-        if (Objects.nonNull(response)) {
-            String uuid = response.getBody();
-            createAndSaveItem(uuid, request.getContent());
+        try {
+            ResponseEntity<String> response = restfulService.postJson(URL_INIT, request.getContent(), String.class);
+            if (Objects.nonNull(response)) {
+                String uuid = response.getBody();
+                createAndSaveItem(uuid, request.getContent());
+            } else {
+                log.info("Null response for content: {}", request.getContent());
+            }
+        } catch (Exception ex) {
+            log.info("Error:{} during importing content: {}", ex.getMessage(), request.getContent());
         }
     }
 
@@ -47,7 +52,7 @@ public class ProcessingService {
     }
 
     public void updateItemStatus(List<Item> itemsInProgress) {
-        var updatedItems =itemsInProgress
+        var updatedItems = itemsInProgress
                 .stream()
                 .map(i -> {
                     Status status = getStatus(i.getUuidTps());
@@ -60,11 +65,16 @@ public class ProcessingService {
     }
 
     public Status getStatus(String uuid) {
-        ResponseEntity<Status> response = restfulService.get(URL_GET, Status.class, uuid);
-        if (Objects.nonNull(response)) {
-            return response.getBody();
-        } else {
-            return new Status(uuid, StatusType.NOT_SENT);
+        try {
+            ResponseEntity<Status> response = restfulService.get(URL_GET, Status.class, uuid);
+            if (Objects.nonNull(response)) {
+                return response.getBody();
+            } else {
+                return new Status(uuid, StatusType.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            log.info("Error: {} during checking for status UUID: {}", ex.getMessage(), uuid);
+            return new Status(uuid, StatusType.NOT_FOUND);
         }
     }
 
