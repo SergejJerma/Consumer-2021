@@ -1,14 +1,15 @@
-package com.visma.task.consumer.cron;
+package com.serjer.task.consumer.cron;
 
-import com.visma.task.consumer.model.Item;
-import com.visma.task.consumer.model.StatusType;
-import com.visma.task.consumer.repository.ItemRepository;
-import com.visma.task.consumer.service.ProcessingService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.serjer.task.consumer.model.Item;
+import com.serjer.task.consumer.model.StatusType;
+import com.serjer.task.consumer.repository.ItemRepository;
+import com.serjer.task.consumer.service.ProcessingService;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

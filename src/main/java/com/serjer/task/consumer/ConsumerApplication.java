@@ -1,4 +1,4 @@
-package com.visma.task.consumer;
+package com.serjer.task.consumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +21,7 @@ public class ConsumerApplication {
 	@Bean
 	public Docket productApi() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.visma.task.consumer")).build();
+				.apis(RequestHandlerSelectors.basePackage("com.serjer.task.consumer")).build();
 	}
 
 

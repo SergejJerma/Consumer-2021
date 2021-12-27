@@ -1,15 +1,19 @@
-package com.visma.task.consumer.controller;
+package com.serjer.task.consumer.controller;
 
-import com.visma.task.consumer.model.ClientRequest;
-import com.visma.task.consumer.model.ContentResponse;
-import com.visma.task.consumer.service.ProcessingService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.serjer.task.consumer.model.ClientRequest;
+import com.serjer.task.consumer.model.ContentResponse;
+import com.serjer.task.consumer.service.ProcessingService;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -22,9 +26,11 @@ public class ClientController {
     }
 
     @PostMapping("/import-content")
-    public void importClientItem(@RequestBody ClientRequest request){
+    @ResponseBody
+    public ResponseEntity<HttpStatus> importClientItem(@RequestBody ClientRequest request){
         log.info("POST/import-content getting request={}", request);
         processingService.importContent(request);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/submitted-content")

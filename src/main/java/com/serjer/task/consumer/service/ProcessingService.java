@@ -1,16 +1,22 @@
-package com.visma.task.consumer.service;
+package com.serjer.task.consumer.service;
 
-import com.visma.task.consumer.model.*;
-import com.visma.task.consumer.repository.ItemRepository;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import com.serjer.task.consumer.model.ClientRequest;
+import com.serjer.task.consumer.model.ContentResponse;
+import com.serjer.task.consumer.model.Item;
+import com.serjer.task.consumer.model.Status;
+import com.serjer.task.consumer.model.StatusType;
+import com.serjer.task.consumer.repository.ItemRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -29,28 +35,17 @@ public class ProcessingService {
 
     @Async
     public void importContent(ClientRequest request) {
-        try {
-            ResponseEntity<String> response = restfulService.postJson(URL_INIT, request.getContent(), String.class);
-            if (Objects.nonNull(response)) {
-                String uuid = response.getBody();
-                createAndSaveItem(uuid, request.getContent());
-            } else {
-                log.info("Null response for content: {}", request.getContent());
-            }
-        } catch (Exception ex) {
-            log.info("Error:{} during importing content: {}", ex.getMessage(), request.getContent());
-        }
+        ResponseEntity<String> response = restfulService.postJson(URL_INIT, request.getContent(), String.class);
+        createAndSaveItem(response.getBody(), request.getContent());
     }
 
-    private void createAndSaveItem(String uuid, String content) {
-        Item item = new Item();
-        item.setUuidTps(uuid);
-        item.setContent(content);
-        item.setStatusType(getStatus(uuid).getStatusType().name());
-        item.setDateCreated(LocalDateTime.now());
+    @Transactional
+    protected void createAndSaveItem(String uuid, String content) {
+        Item item = new Item(uuid, content, getStatus(uuid).getStatusType().name(), LocalDateTime.now(), null);
         itemRepository.save(item);
     }
 
+    @Transactional
     public void updateItemStatus(List<Item> itemsInProgress) {
         var updatedItems = itemsInProgress
                 .stream()
@@ -64,18 +59,9 @@ public class ProcessingService {
         log.info("Updated items={}", updatedItems);
     }
 
-    public Status getStatus(String uuid) {
-        try {
-            ResponseEntity<Status> response = restfulService.get(URL_GET, Status.class, uuid);
-            if (Objects.nonNull(response)) {
-                return response.getBody();
-            } else {
-                return new Status(uuid, StatusType.NOT_FOUND);
-            }
-        } catch (Exception ex) {
-            log.info("Error: {} during checking for status UUID: {}", ex.getMessage(), uuid);
-            return new Status(uuid, StatusType.NOT_FOUND);
-        }
+    private Status getStatus(String uuid) {
+        ResponseEntity<Status> response = restfulService.get(URL_GET, Status.class, uuid);
+        return response.getBody();
     }
 
     public List<ContentResponse> getSubmittedContent() {

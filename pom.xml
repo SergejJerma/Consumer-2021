@@ -8,13 +8,14 @@
 		<version>2.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.visma.task</groupId>
+	<groupId>com.serjer.task</groupId>
 	<artifactId>consumer-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>consumer-service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>com.serjer.task.consumer.ConsumerApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>

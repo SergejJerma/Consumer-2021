@@ -1,4 +1,4 @@
-package com.visma.task.consumer.service;
+package com.serjer.task.consumer.service;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;

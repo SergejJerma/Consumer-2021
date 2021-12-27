@@ -1,4 +1,4 @@
-package com.visma.task.consumer.model;
+package com.serjer.task.consumer.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
